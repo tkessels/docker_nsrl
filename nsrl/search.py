@@ -3,6 +3,7 @@
 
 import argparse
 import binascii
+import sys
 
 from pybloom import BloomFilter
 
@@ -10,13 +11,19 @@ def main():
     parser = argparse.ArgumentParser(prog='nsrl')
     parser.add_argument("-v", "--verbose", help="Display verbose output message", action="store_true", required=False)
     parser.add_argument("-m", "--mismatched", help="Echo only mismatched Hashvalues", action="store_true", required=False)
-    parser.add_argument('hash', metavar='MD5', type=str, nargs='+', help='md5 hash to search for.')
+    inputs = parser.add_mutually_exclusive_group(required=True)
+    inputs.add_argument('hash', metavar='<MD5>', type=str, nargs='*', default=[], help='md5 hash to search for.')
+    inputs.add_argument('-s','--stdin',help="Read hashes from stdin", action="store_true")
     args = parser.parse_args()
 
     with open('nsrl.bloom', 'rb') as nb:
         bf = BloomFilter.fromfile(nb)
 
-        for hash_hex in args.hash:
+        if args.stdin:
+            hashlist=[hash.strip() for hash in sys.stdin.readlines()]
+        else:
+            hashlist=args.hash
+        for hash_hex in hashlist:
             hash = binascii.unhexlify(hash_hex)
             output=""
 
