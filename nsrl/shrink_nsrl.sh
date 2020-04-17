@@ -40,7 +40,7 @@ let hash_count=$(cat "/nsrl/${hashfile_name}"|wc -l )-1
 echo "[INFO] /nsrl/${hashfile_name} contains ${hash_count} Hashes"
 
 echo "[INFO] Build bloomfilter from NSRL Database ..."
-cd /nsrl && python /nsrl/build.py $error_rate
+cd /nsrl && python /nsrl/build.py -e "${error_rate}" -n "${hash_count}"
 echo "[INFO] Listing created files ..."
 ls -lah /nsrl
 
