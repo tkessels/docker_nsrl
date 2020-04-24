@@ -78,7 +78,7 @@ def main():
                 print "[BUILDING] Calculating number of entries in Inputfile..."
                 num_lines = sum(bl.count("\n") for bl in blocks(f_line))
         else:
-            num_lines=conf.getint("error_rate")
+            num_lines=conf.getint("hash_count")
         print "[BUILDING] There are {} {}s in the Database".format(num_lines,hashfile_type)
         with open(nsrl_path) as f_nsrl:
             # Strip off header
