@@ -30,7 +30,7 @@ def main():
     settings.add_argument('-n','--hashcount',type=int, help="Provide the hashcount")
     settings.add_argument('-c','--column', type=int, help="Which Column of inputfile should be processed (0,1,...)")
     settings.add_argument('-l','--label', help="What kind of Data is beeing processed (MD5,filenames,...)")
-    settings.add_argument('-d','--delimiter', ' , help="Which char is used to delimit columns in inputfile")
+    settings.add_argument('-d','--delimiter', help="Which char is used to delimit columns in inputfile")
     settings.add_argument('-i','--inputfile',  help="Path of input file")
     settings.add_argument('-o','--outputfile',  help="Path of input file")
 
