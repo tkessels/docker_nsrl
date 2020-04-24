@@ -3,7 +3,7 @@
 
 import binascii
 import os
-import configparser
+import ConfigParser
 from pybloom import BloomFilter
 
 
@@ -46,41 +46,46 @@ def main():
             configfiles.append(args.config)
 
     #build config
-    config = ConfigParser.ConfigParser()
-    config.read(configfiles)
+    conf = ConfigParser.ConfigParser()
+    conf.read(configfiles)
     #add commandline options
-    conf=config["config"]
+    # conf=config["config"]
     if args.error_rate:
-        conf["error_rate"]=args.error_rate
+        conf.set("config","error_rate",str(args.error_rate))
     if args.hashcount:
-        conf["hash_count"]=args.hashcount
+        conf.set("config","hash_count",str(args.hashcount))
     if args.column:
-        conf["hashfile_column"]=args.column
+        conf.set("config","hashfile_column",str(args.column))
     if args.label:
-        conf["hashfile_type"]=args.label
+        conf.set("config","hashfile_type",str(args.label))
     if args.delimiter:
-        conf["hashfile_delimiter"]=args.delimiter
+        conf.set("config","hashfile_delimiter",str(args.delimiter))
     if args.inputfile:
-        conf["hashfile_path"]=args.inputfile
+        conf.set("config","hashfile_path",str(args.inputfile))
 
-    nsrl_path=conf.get("hashfile_path",'/nsrl/NSRLFile.txt')
-    error_rate=conf.getfloat('error_rate',0.01)
-    hashfile_delimiter=conf.get('hashfile_delimiter',',')
-    hashfile_column=conf.getint('hashfile_column',0)
-    hashfile_type=conf.get('hashfile_type','Hash')
+    nsrl_path='/nsrl/NSRLFile.txt'
+    error_rate=0.01
+    hashfile_delimiter=','
+    hashfile_column=0
+    hashfile_type='Hash'
+    nsrl_path=conf.get("config","hashfile_path")
+    error_rate=conf.getfloat("config",'error_rate')
+    hashfile_delimiter=conf.get("config",'hashfile_delimiter')
+    hashfile_column=conf.getint("config",'hashfile_column')
+    hashfile_type=conf.get("config",'hashfile_type')
 
     print "[BUILDING] Using error-rate: {}".format(error_rate)
     if os.path.isfile(nsrl_path):
         print "[BUILDING] Reading in NSRL Database"
-        if not conf.has_option("hash_count"):
+        if not conf.has_option("config","hash_count"):
             with open(nsrl_path) as f_line:
                 # Strip off header
                 _ = f_line.readline()
                 print "[BUILDING] Calculating number of entries in Inputfile..."
                 num_lines = sum(bl.count("\n") for bl in blocks(f_line))
-                conf['hash_count']=num_lines
+                conf.set("config",'hash_count',str(num_lines))
         else:
-            num_lines=conf.getint("hash_count")
+            num_lines=conf.getint("config","hash_count")
         print "[BUILDING] There are {} {}s in the Database".format(num_lines,hashfile_type)
         with open(nsrl_path) as f_nsrl:
             # Strip off header
@@ -106,7 +111,7 @@ def main():
 
     #save config
     with open(default_config_file,'w') as configfile:
-        config.write(configfile)
+        conf.write(configfile)
 
 
 if __name__ == "__main__":
