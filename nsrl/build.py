@@ -38,7 +38,8 @@ def main():
     args = parser.parse_args()
 
     #check if config-file was given
-    configfiles=['/nsrl/nsrl.conf']
+    default_config_file='/nsrl/nsrl.conf'
+    configfiles=[default_config_file]
     if not args.config is None:
         #add user config
         if os.path.isfile(args.config):
@@ -77,6 +78,7 @@ def main():
                 _ = f_line.readline()
                 print "[BUILDING] Calculating number of entries in Inputfile..."
                 num_lines = sum(bl.count("\n") for bl in blocks(f_line))
+                conf['hash_count']=num_lines
         else:
             num_lines=conf.getint("hash_count")
         print "[BUILDING] There are {} {}s in the Database".format(num_lines,hashfile_type)
@@ -102,7 +104,9 @@ def main():
     else:
         print("[ERROR] No such file or directory: %s", nsrl_path)
 
-    return
+    #save config
+    with open(default_config_file,'w') as configfile:
+        config.write(configfile)
 
 
 if __name__ == "__main__":
